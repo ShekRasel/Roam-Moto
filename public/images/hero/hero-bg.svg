@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Luxury motorcycle background">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#05070f" />
+      <stop offset="50%" stop-color="#11172a" />
+      <stop offset="100%" stop-color="#090b14" />
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#g)" />
+  <circle cx="400" cy="220" r="200" fill="#ffffff12" />
+  <circle cx="1350" cy="650" r="260" fill="#ffffff0e" />
+  <text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" fill="#f8fafc" font-family="Inter, Arial, sans-serif" font-size="88">Velocity Studio</text>
+  <text x="50%" y="68%" text-anchor="middle" dominant-baseline="middle" fill="#cbd5e1" font-family="Inter, Arial, sans-serif" font-size="28">Luxury motorcycle experience</text>
+</svg>
