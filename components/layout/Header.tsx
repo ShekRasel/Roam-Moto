@@ -1,40 +1,83 @@
 "use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 import { navigation } from "@/lib/constants";
-import { Menu } from "lucide-react";
-
 export function Header() {
+  const path = usePathname();
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    setOpen(false);
+  }, [path]);
+  useEffect(() => {
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, []);
   return (
-    <motion.header
-      initial={{ y: -40, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/70 backdrop-blur-2xl"
-    >
-      <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-6 px-4 py-4 md:px-8">
-        <Link
-          href="/"
-          className="font-display text-lg font-bold tracking-[0.22em] text-white/90"
-        >
-          VELOCITY STUDIO
+    <header className="site-header">
+      <div className="shell header-inner">
+        <Link href="/" className="brand" aria-label="Velocity Studio home">
+          <span className="brand-mark" aria-hidden="true">
+            V<span> /</span>
+          </span>
+          <span>
+            VELOCITY
+            <span className="brand-sub">STUDIO · MOTORCYCLE EXPERIENCES</span>
+          </span>
         </Link>
-        <div className="hidden items-center gap-8 md:flex">
+        <nav className="desktop-nav" aria-label="Main navigation">
           {navigation.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm uppercase tracking-[0.28em] text-white/70 transition hover:text-white"
+              aria-current={path === item.href ? "page" : undefined}
             >
               {item.label}
             </Link>
           ))}
-        </div>
-        <button className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/90 transition hover:border-accent hover:bg-white/10 md:hidden">
-          <Menu size={20} />
+        </nav>
+        <Link
+          className="button button-dark header-book"
+          href="/customize-booking"
+        >
+          Book a ride <ArrowUpRight size={16} />
+        </Link>
+        <button
+          type="button"
+          className="menu-toggle"
+          aria-label={open ? "Close navigation" : "Open navigation"}
+          aria-expanded={open}
+          aria-controls="mobile-navigation"
+          onClick={() => setOpen(!open)}
+        >
+          {open ? <X /> : <Menu />}
         </button>
       </div>
-    </motion.header>
+      {open && (
+        <nav
+          id="mobile-navigation"
+          className="mobile-nav shell"
+          aria-label="Mobile navigation"
+        >
+          {navigation.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              aria-current={path === item.href ? "page" : undefined}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <Link href="/customize-booking" onClick={() => setOpen(false)}>
+            Book a ride <ArrowUpRight size={18} />
+          </Link>
+        </nav>
+      )}
+    </header>
   );
 }
