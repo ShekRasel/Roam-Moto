@@ -1,62 +1,108 @@
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { TeamSection } from "@/components/sections/TeamSection";
-import { Timeline } from "@/components/sections/Timeline";
-
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
+export const metadata = { title: "Our story" };
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-[1440px] px-4 py-28 md:px-8">
-      <section className="rounded-[36px] border border-white/10 bg-white/5 p-12 shadow-premium">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_0.8fr] lg:items-center">
-          <div className="space-y-6">
-            <SectionHeading
-              title="We don't build motorcycles."
-              subtitle="We craft legends."
-            />
-            <p className="max-w-2xl text-base leading-8 text-white/70">
-              Velocity Studio is a luxury motorcycle atelier focused on
-              immersive storytelling, engineering excellence and bespoke rider
-              experiences. Each launch is an orchestration of aesthetic
-              precision and performance.
-            </p>
-            <p className="text-sm uppercase tracking-[0.35em] text-accent">
-              The Philosophy
-            </p>
-          </div>
-          <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-black/40">
-            <img
-              src="/images/about/workshop.svg"
-              alt="Workshop"
-              className="h-full w-full object-cover"
-            />
-          </div>
+    <>
+      <section className="shell about-hero">
+        <div>
+          <p className="eyebrow">THE IDEA BEHIND VELOCITY</p>
+          <h1>
+            Life’s better
+            <br />
+            with a little
+            <br />
+            <em>open road.</em>
+          </h1>
+          <p>
+            We’re here for the early starts, the unplanned stops, and the roads
+            that make you forget to check your phone.
+          </p>
+          <p>
+            Velocity Studio is a motorcycle rental concept built around those
+            moments. A small collection of characterful bikes, an easy way to
+            plan, and a good reason to get outside.
+          </p>
+          <Link href="/motorcycles" className="text-link">
+            Meet your next ride <ArrowUpRight size={18} />
+          </Link>
+        </div>
+        <div className="about-image">
+          <Image
+            src="/images/motorcycles/velocity-V1-2.avif"
+            alt="A rider enjoying the open road in the evening light"
+            fill
+            priority
+            sizes="(max-width: 600px) 100vw, 50vw"
+          />
         </div>
       </section>
-      <section className="mt-16 grid gap-10 xl:grid-cols-[0.8fr_1.2fr]">
-        <div className="space-y-8">
-          <div className="rounded-[36px] border border-white/10 bg-white/5 p-10 shadow-premium">
-            <h2 className="text-3xl font-accent font-bold uppercase tracking-[0.12em] text-white">
-              Our Story
-            </h2>
-            <div className="mt-8 space-y-6 text-sm leading-8 text-white/70">
-              <p>
-                Founded from a passion for extraordinary machines, Velocity
-                Studio combines boutique craftsmanship with high-performance
-                motorcycle design.
-              </p>
-              <p>
-                Every detail is refined through relentless research, premium
-                materials and a relentless pursuit of motion that feels alive.
-              </p>
-              <p>
-                From concept to road, our studio delivers a luxury experience
-                that is as memorable as the ride itself.
-              </p>
+      <section className="manifesto section">
+        <div className="shell">
+          <p className="eyebrow">OUR WAY OF THINKING</p>
+          <h2>
+            You don’t always need a destination.
+            <br />
+            Sometimes, you just need
+            <br />
+            <em>a good reason to go.</em>
+          </h2>
+        </div>
+      </section>
+      <section className="shell section">
+        <p className="eyebrow">WHAT MATTERS TO US</p>
+        <h2>
+          Good bikes. Clear choices.
+          <br />
+          Room for adventure.
+        </h2>
+        <div className="values-grid">
+          {[
+            [
+              "01",
+              "Character over quantity",
+              "A collection you can understand. Each motorcycle has a clear riding style, a matching photo, and a reason to choose it.",
+            ],
+            [
+              "02",
+              "Keep it straightforward",
+              "Daily rental prices, simple packages, and a visible estimate. Know what you’re planning before taking the next step.",
+            ],
+            [
+              "03",
+              "Ride your own ride",
+              "A day out can mean something different to everyone. Choose the bike and pace that fit your experience and your idea of a good day.",
+            ],
+          ].map(([n, t, p]) => (
+            <div key={n}>
+              <span>{n}</span>
+              <h3>{t}</h3>
+              <p>{p}</p>
             </div>
-          </div>
-          <Timeline />
+          ))}
         </div>
-        <TeamSection />
       </section>
-    </div>
+      <section className="shell section related-section">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">WHERE WE ARE TODAY</p>
+            <h2>An idea you can explore.</h2>
+          </div>
+          <div>
+            <p>
+              This site is a working design concept.
+              <br />
+              Browse the bikes and try a demo ride plan.
+              <br />
+              Real rentals and payments are not available yet.
+            </p>
+            <Link href="/customize-booking" className="text-link">
+              Try planning a ride <ArrowUpRight size={18} />
+            </Link>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

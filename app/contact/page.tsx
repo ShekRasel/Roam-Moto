@@ -1,131 +1,157 @@
 "use client";
-
-"use client";
-
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Button } from "@/components/ui/Button";
-
-const contactSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  subject: z.string().min(1),
-  message: z.string().min(10),
-});
-
-type ContactFormValues = z.infer<typeof contactSchema>;
-
+import { FormEvent, useRef, useState } from "react";
+import Link from "next/link";
+import { ArrowUpRight, Info } from "lucide-react";
 export default function ContactPage() {
-  const { register, handleSubmit, formState, reset } =
-    useForm<ContactFormValues>({
-      resolver: zodResolver(contactSchema),
-    });
-
-  const onSubmit = () => {
-    reset();
-    window.alert("Message sent. Our studio team will be in touch shortly.");
-  };
-
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const resultRef = useRef<HTMLDivElement>(null);
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    if (
+      String(data.get("name")).trim().length < 2 ||
+      String(data.get("message")).trim().length < 10
+    ) {
+      setError(
+        "Please enter your name and a message of at least 10 characters.",
+      );
+      return;
+    }
+    setError("");
+    setSubmitted(true);
+    requestAnimationFrame(() => resultRef.current?.focus());
+  }
   return (
-    <div className="mx-auto max-w-[1440px] px-4 py-28 md:px-8">
-      <SectionHeading title="Contact" subtitle="Luxury connections, direct." />
-      <div className="mt-12 grid gap-10 lg:grid-cols-[0.95fr_0.85fr]">
-        <div className="rounded-[36px] border border-white/10 bg-white/5 p-10 shadow-premium">
-          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-            <div className="grid gap-6 sm:grid-cols-2">
-              <label className="space-y-2 text-sm text-white/70">
-                <span>Name</span>
-                <input
-                  type="text"
-                  {...register("name")}
-                  className="w-full rounded-3xl border border-white/10 bg-black/50 px-4 py-4 text-white outline-none focus:border-accent"
-                />
-                {formState.errors.name && (
-                  <span className="text-xs text-redAccent">
-                    {formState.errors.name.message}
-                  </span>
-                )}
-              </label>
-              <label className="space-y-2 text-sm text-white/70">
-                <span>Email</span>
-                <input
-                  type="email"
-                  {...register("email")}
-                  className="w-full rounded-3xl border border-white/10 bg-black/50 px-4 py-4 text-white outline-none focus:border-accent"
-                />
-                {formState.errors.email && (
-                  <span className="text-xs text-redAccent">
-                    {formState.errors.email.message}
-                  </span>
-                )}
-              </label>
+    <div className="shell">
+      <div className="page-heading">
+        <p className="eyebrow">LET’S TALK RIDES</p>
+        <h1>
+          Good questions.
+          <br />
+          <em>Great conversations.</em>
+        </h1>
+        <p>
+          Curious about the bikes, the experience, or the idea behind it? You’re
+          in the right place.
+        </p>
+      </div>
+      <div className="contact-layout">
+        <div className="contact-copy">
+          <h2>
+            A little help
+            <br />
+            for the road ahead.
+          </h2>
+          <p>
+            Start with the collection to find your riding style, or explore the
+            ride planner to see how the packages work.
+          </p>
+          <div className="contact-topics">
+            <div>
+              <h3>Choosing a motorcycle</h3>
+              <p>Compare sport bikes and roadsters to find the right fit.</p>
             </div>
-            <label className="space-y-2 text-sm text-white/70">
-              <span>Subject</span>
-              <select
-                {...register("subject")}
-                className="w-full rounded-3xl border border-white/10 bg-black/50 px-4 py-4 text-white outline-none focus:border-accent"
-              >
-                <option value="General Inquiry">General Inquiry</option>
-                <option value="Partnership">Partnership</option>
-                <option value="Booking">Booking</option>
-                <option value="Other">Other</option>
-              </select>
-              {formState.errors.subject && (
-                <span className="text-xs text-redAccent">
-                  {formState.errors.subject.message}
-                </span>
-              )}
-            </label>
-            <label className="space-y-2 text-sm text-white/70">
-              <span>Message</span>
-              <textarea
-                rows={6}
-                {...register("message")}
-                className="w-full rounded-3xl border border-white/10 bg-black/50 px-4 py-4 text-white outline-none focus:border-accent"
+            <div>
+              <h3>Planning your time</h3>
+              <p>Try a day escape, a weekend away, or a longer break.</p>
+            </div>
+          </div>
+          <Link href="/#how-it-works" className="text-link">
+            See how it works <ArrowUpRight size={17} />
+          </Link>
+          <div className="info-banner mt-6">
+            <Info size={18} />
+            <span>
+              This is a demo contact form. Your message is not sent or stored.
+              Please use sample details.
+            </span>
+          </div>
+        </div>
+        <form
+          className="form-panel"
+          onSubmit={submit}
+          onChange={() => {
+            setSubmitted(false);
+            setError("");
+          }}
+        >
+          <h2>Try an enquiry</h2>
+          <p className="panel-intro">
+            Preview the experience with a sample message.
+          </p>
+          <div className="form-grid">
+            <label className="field">
+              Your name
+              <input
+                name="name"
+                autoComplete="name"
+                placeholder="Alex Morgan"
+                required
+                minLength={2}
+                maxLength={80}
               />
-              {formState.errors.message && (
-                <span className="text-xs text-redAccent">
-                  {formState.errors.message.message}
-                </span>
-              )}
             </label>
-            <Button type="submit">Send Message</Button>
-          </form>
-        </div>
-        <div className="space-y-6 rounded-[36px] border border-white/10 bg-white/5 p-10 shadow-premium">
-          <div>
-            <p className="text-sm uppercase tracking-[0.35em] text-accent">
-              Contact Info
-            </p>
-            <p className="mt-4 text-sm leading-7 text-white/70">
-              Velocity Studio, Mumbai, India
-            </p>
+            <label className="field">
+              Email address
+              <input
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder="alex@example.com"
+                required
+                maxLength={120}
+              />
+            </label>
+            <label className="field field-full">
+              What’s on your mind?
+              <select name="subject" defaultValue="" required>
+                <option value="" disabled>
+                  Choose a topic
+                </option>
+                <option>Choosing a motorcycle</option>
+                <option>Planning a ride</option>
+                <option>About Velocity Studio</option>
+                <option>Something else</option>
+              </select>
+            </label>
+            <label className="field field-full">
+              Your message
+              <textarea
+                name="message"
+                rows={5}
+                required
+                minLength={10}
+                maxLength={2000}
+                placeholder="Tell us what you have in mind…"
+              />
+            </label>
           </div>
-          <div className="space-y-4 text-sm text-white/70">
-            <p>
-              <span className="font-semibold text-white">Phone:</span> +91 12345
-              67890
+          {error && (
+            <p className="field-error" role="alert">
+              {error}
             </p>
-            <p>
-              <span className="font-semibold text-white">Email:</span>{" "}
-              info@velocitystudio.com
-            </p>
+          )}
+          <div className="form-actions">
+            <p>No message will be sent.</p>
+            <button className="button button-orange" type="submit">
+              Preview enquiry <ArrowUpRight size={17} />
+            </button>
           </div>
-          <div className="rounded-3xl border border-white/10 bg-black/50 p-4 text-sm text-white/70">
-            <p className="font-semibold text-white">Follow us</p>
-            <p className="mt-3">Instagram / YouTube / Twitter / LinkedIn</p>
-          </div>
-          <div className="rounded-3xl border border-white/10 bg-black/50 p-4 text-sm text-white/70">
-            <p className="font-semibold text-white">Map</p>
-            <p className="mt-3">
-              An immersive studio location in the heart of Mumbai. (Map preview
-              available in production.)
-            </p>
-          </div>
-        </div>
+          {submitted && (
+            <div
+              className="contact-success"
+              role="status"
+              tabIndex={-1}
+              ref={resultRef}
+            >
+              <strong>Your sample enquiry is ready.</strong>
+              <br />
+              In a live service, this would go to the team. This demo has not
+              sent or saved your details.
+            </div>
+          )}
+        </form>
       </div>
     </div>
   );
