@@ -1,43 +1,37 @@
-"use client";
-
-import { motion } from "framer-motion";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { motorcycles } from "@/lib/motorcycles-data";
 import { MotorcycleCard } from "@/components/ui/MotorcycleCard";
-
 export function MotorcycleGrid() {
   return (
-    <section className="space-y-8 border-t border-white/10 pt-14">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+    <section className="section shell" id="collection">
+      <div className="section-heading">
         <div>
-          <p className="text-xs uppercase tracking-[0.35em] text-accent">
-            THE COLLECTION
-          </p>
-          <h2 className="font-accent text-4xl font-bold uppercase tracking-[0.12em] text-white md:text-5xl">
-            Discover the signature fleet
+          <p className="eyebrow">THE COLLECTION</p>
+          <h2>
+            Different bikes.
+            <br />
+            Same sense of freedom.
           </h2>
         </div>
-        <p className="max-w-xl text-sm leading-7 text-white/70">
-          Every machine is curated with advanced engineering and a sculpted
-          aesthetic that commands attention.
-        </p>
+        <div>
+          <p>
+            Find the ride that feels like you.
+            <br />A day out or a whole weekend away.
+          </p>
+          <Link href="/motorcycles" className="text-link">
+            Explore all motorcycles <ArrowUpRight size={17} />
+          </Link>
+        </div>
       </div>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="grid gap-6 md:grid-cols-2 xl:grid-cols-3"
-      >
-        {motorcycles.map((motorcycle) => (
-          <MotorcycleCard
-            key={motorcycle.id}
-            slug={motorcycle.slug}
-            image={motorcycle.image}
-            model={motorcycle.model}
-            type={motorcycle.type}
-            spec={`${motorcycle.horsepower} HP • ${motorcycle.acceleration}`}
-          />
+      <div className="bike-grid">
+        {motorcycles.map((m) => (
+          <MotorcycleCard key={m.id} motorcycle={m} />
         ))}
-      </motion.div>
+      </div>
+      <p className="collection-note">
+        Illustrative daily rates · Explore each bike to plan your ride.
+      </p>
     </section>
   );
 }

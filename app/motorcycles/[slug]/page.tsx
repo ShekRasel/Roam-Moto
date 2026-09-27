@@ -1,5 +1,5 @@
-import { notFound } from "next/navigation";
-import { motorcycles } from "@/lib/motorcycles-data";
+import { notFound, permanentRedirect } from "next/navigation";
+import { motorcycles, legacySlugs } from "@/lib/motorcycles-data";
 import MotorcycleDetailClient from "@/components/sections/MotorcycleDetailClient";
 
 type PageProps = {
@@ -10,6 +10,7 @@ type PageProps = {
 
 export default async function MotorcycleDetailPage({ params }: PageProps) {
   const { slug } = await params;
+  if (legacySlugs[slug]) permanentRedirect(`/motorcycles/${legacySlugs[slug]}`);
 
   const motorcycle = motorcycles.find((item) => item.slug === slug);
 

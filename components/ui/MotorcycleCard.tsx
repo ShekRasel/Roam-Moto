@@ -1,48 +1,49 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
-
-interface MotorcycleCardProps {
-  slug: string;
-  image: string;
-  model: string;
-  type: string;
-  spec: string;
-}
-
-export function MotorcycleCard({
-  slug,
-  image,
-  model,
-  type,
-  spec,
-}: MotorcycleCardProps) {
+import Image from "next/image";
+import { ArrowUpRight } from "lucide-react";
+import { RideMotorcycle } from "@/lib/motorcycles-data";
+import { formatCurrency } from "@/lib/utils";
+export function MotorcycleCard({ motorcycle }: { motorcycle: RideMotorcycle }) {
   return (
-    <motion.article
-      whileHover={{ y: -6 }}
-      transition={{ type: "spring", stiffness: 160, damping: 18 }}
-      className="group overflow-hidden rounded-[32px] border border-white/10 bg-white/5 shadow-premium"
-    >
+    <article className="bike-card">
       <Link
-        href={`/motorcycles/${slug}`}
-        className="block overflow-hidden rounded-[32px]"
+        href={`/motorcycles/${motorcycle.slug}`}
+        className="bike-card-image"
+        aria-label={`Explore ${motorcycle.model}`}
       >
-        <div className="relative h-72 overflow-hidden transition duration-500 group-hover:scale-105">
-          <img
-            src={image}
-            alt={model}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
-          />
-          <div className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-black/90 to-transparent px-5 py-4 transition duration-500 group-hover:translate-y-0">
-            <p className="text-sm uppercase tracking-[0.3em] text-white/70">
-              {type}
-            </p>
-            <p className="mt-2 text-xl font-semibold text-white">{model}</p>
-            <p className="mt-1 text-sm text-white/70">{spec}</p>
-          </div>
-        </div>
+        <Image
+          src={motorcycle.image}
+          alt={`${motorcycle.color} ${motorcycle.model} motorcycle`}
+          fill
+          sizes="(max-width: 700px) 100vw, (max-width: 1000px) 50vw, 33vw"
+          style={{ objectPosition: motorcycle.imagePosition }}
+        />
+        <span className="image-pill">{motorcycle.type}</span>
+        <span className="image-arrow">
+          <ArrowUpRight size={21} />
+        </span>
       </Link>
-    </motion.article>
+      <div className="bike-card-content">
+        <p className="small-label">{motorcycle.label}</p>
+        <h3>
+          <Link href={`/motorcycles/${motorcycle.slug}`}>
+            {motorcycle.model}
+          </Link>
+        </h3>
+        <p className="bike-caption">{motorcycle.tagline}</p>
+        <div className="bike-card-bottom">
+          <p>
+            <strong>{formatCurrency(motorcycle.price)}</strong>
+            <span> / day</span>
+          </p>
+          <Link
+            href={`/customize-booking?bike=${motorcycle.slug}`}
+            className="text-link"
+          >
+            Plan a ride <ArrowUpRight size={16} />
+          </Link>
+        </div>
+      </div>
+    </article>
   );
 }

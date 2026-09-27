@@ -1,59 +1,56 @@
 "use client";
-
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { Info } from "lucide-react";
 import { motorcycles } from "@/lib/motorcycles-data";
-import { FilterButton } from "@/components/ui/FilterButton";
 import { MotorcycleCard } from "@/components/ui/MotorcycleCard";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-
-const categories = [
-  "All",
-  "Sport",
-  "Touring",
-  "Cruiser",
-  "Adventure",
-  "Electric",
-] as const;
-
+const categories = ["All motorcycles", "Sport", "Roadster"] as const;
 export default function MotorcyclesPage() {
-  const [active, setActive] = useState<(typeof categories)[number]>("All");
-
-  const filtered = useMemo(() => {
-    if (active === "All") return motorcycles;
-    return motorcycles.filter((model) => model.type === active);
-  }, [active]);
-
+  const [active, setActive] = useState<string>("All motorcycles");
+  const filtered = motorcycles.filter(
+    (m) => active === "All motorcycles" || m.type === active,
+  );
   return (
-    <div className="mx-auto max-w-[1440px] px-4 py-28 md:px-8">
-      <SectionHeading
-        title="The Collection"
-        subtitle="Where engineering meets art"
-      >
-        Discover a signature lineup of motorcycles that blend luxury, precision
-        and raw performance.
-      </SectionHeading>
-      <div className="mt-10 flex flex-wrap gap-3">
-        {categories.map((category) => (
-          <FilterButton
-            key={category}
-            label={category}
-            active={active === category}
-            onClick={() => setActive(category)}
-          />
+    <div className="shell collection-page">
+      <div className="page-heading">
+        <p className="eyebrow">FIND YOUR KIND OF FREEDOM</p>
+        <h1>
+          A ride for every
+          <br />
+          <em>kind of weekend.</em>
+        </h1>
+        <p>
+          Sporty, classic, or a little extraordinary. Explore our motorcycle
+          collection and build a ride around what moves you.
+        </p>
+      </div>
+      <div className="collection-tools">
+        <div className="filter-list" aria-label="Filter motorcycles by style">
+          {categories.map((c) => (
+            <button
+              type="button"
+              key={c}
+              className="filter-button"
+              aria-pressed={active === c}
+              onClick={() => setActive(c)}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+        <p aria-live="polite">{filtered.length} motorcycles</p>
+      </div>
+      <div className="bike-grid">
+        {filtered.map((m) => (
+          <MotorcycleCard key={m.id} motorcycle={m} />
         ))}
       </div>
-      <p className="mt-6 text-sm text-white/60">{filtered.length} results</p>
-      <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {filtered.map((motorcycle) => (
-          <MotorcycleCard
-            key={motorcycle.id}
-            slug={motorcycle.slug}
-            image={motorcycle.image}
-            model={motorcycle.model}
-            type={motorcycle.type}
-            spec={`${motorcycle.engine} • ${motorcycle.horsepower} HP`}
-          />
-        ))}
+      <div className="info-banner">
+        <Info size={18} />
+        <span>
+          Explore a concept collection. Rates are sample daily rentals, not
+          purchase prices. Model year, availability, and final rental terms
+          would be confirmed before a real booking.
+        </span>
       </div>
     </div>
   );

@@ -1,152 +1,98 @@
-"use client";
-
 import Image from "next/image";
-import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import { motorcycles } from "@/lib/motorcycles-data";
-import { ImageGallery } from "@/components/ui/ImageGallery";
-import { ColorPicker } from "@/components/ui/ColorPicker";
-import { PriceDisplay } from "@/components/ui/PriceDisplay";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-
-type Motorcycle = (typeof motorcycles)[number];
-
-type Props = {
-  motorcycle: Motorcycle;
-};
-
-export default function MotorcycleDetailClient({ motorcycle }: Props) {
-  const [color, setColor] = useState(motorcycle.colors[0]);
-
-  const related = useMemo(
-    () =>
-      motorcycles.filter((item) =>
-        motorcycle.relatedModels.includes(item.slug),
-      ),
-    [motorcycle],
-  );
-
+import Link from "next/link";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { motorcycles, RideMotorcycle } from "@/lib/motorcycles-data";
+import { formatCurrency } from "@/lib/utils";
+import { MotorcycleCard } from "@/components/ui/MotorcycleCard";
+export default function MotorcycleDetailClient({
+  motorcycle: m,
+}: {
+  motorcycle: RideMotorcycle;
+}) {
   return (
-    <div className="mx-auto max-w-[1440px] px-4 py-28 md:px-8">
-      <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="space-y-8">
-          <div className="space-y-3">
-            <p className="text-xs uppercase tracking-[0.35em] text-accent">
-              Motorcycles
-            </p>
-            <h1 className="font-accent text-5xl font-bold uppercase tracking-[0.12em] text-white md:text-6xl">
-              {motorcycle?.model}
-            </h1>
-            <p className="text-sm uppercase tracking-[0.3em] text-white/60">
-              {motorcycle?.type}
-            </p>
-            <p className="max-w-2xl text-base leading-8 text-white/70">
-              {motorcycle?.description}
-            </p>
-          </div>
-          <div className="rounded-[36px] border border-white/10 bg-white/5 p-6 shadow-premium">
-            <div className="grid gap-4 sm:grid-cols-2">
-              {Object.entries(motorcycle?.specifications || {}).map(
-                ([key, value]) => (
-                  <div
-                    key={key}
-                    className="rounded-3xl border border-white/10 bg-black/50 p-4 text-sm text-white/70"
-                  >
-                    <p className="font-semibold text-white">{key}</p>
-                    <p className="mt-2">{value}</p>
-                  </div>
-                ),
-              )}
+    <div className="shell">
+      <div className="breadcrumb">
+        <Link href="/motorcycles">
+          <ArrowLeft size={14} className="inline mr-2" />
+          Our motorcycles
+        </Link>
+        <span>/</span>
+        <span>{m.model}</span>
+      </div>
+      <section className="detail-layout">
+        <div className="detail-photo">
+          <Image
+            src={m.image}
+            alt={`${m.color} ${m.model}`}
+            fill
+            priority
+            sizes="(max-width: 600px) 100vw, 55vw"
+            style={{ objectPosition: m.imagePosition }}
+          />
+        </div>
+        <div className="detail-copy">
+          <p className="eyebrow">
+            {m.type.toUpperCase()} · {m.label.toUpperCase()}
+          </p>
+          <h1>{m.model}</h1>
+          <p className="lead">{m.tagline}</p>
+          <p>{m.description}</p>
+          <dl className="spec-list">
+            <div>
+              <dt>Best for</dt>
+              <dd>{m.bestFor}</dd>
             </div>
-          </div>
-          <div className="space-y-6">
-            <SectionHeading
-              title="Design Philosophy"
-              subtitle="Every curve tells a story of speed"
+            <div>
+              <dt>Riding style</dt>
+              <dd>{m.ridingStyle}</dd>
+            </div>
+            <div>
+              <dt>Shown in</dt>
+              <dd>{m.color}</dd>
+            </div>
+            <div>
+              <dt>Plan your escape</dt>
+              <dd>1, 2, or 3 days</dd>
+            </div>
+          </dl>
+          <div className="price-box">
+            <div className="price-line">
+              <div>
+                <strong>{formatCurrency(m.price)}</strong>
+                <span> / day</span>
+              </div>
+              <span>Sample rental rate</span>
+            </div>
+            <Link
+              href={`/customize-booking?bike=${m.slug}`}
+              className="button button-orange"
             >
-              The Velocity series is engineered to feel aerodynamic, precise and
-              deeply luxurious at every angle.
-            </SectionHeading>
-            <div className="grid gap-6 lg:grid-cols-2">
-              <div className="rounded-[32px] border border-white/10 bg-white/5 p-6 shadow-premium">
-                <p className="text-sm leading-7 text-white/70">
-                  Crafted for the rider who seeks a rich connection between
-                  machine and road, delivered through advanced materials,
-                  refined engineering and purposeful design language.
-                </p>
-              </div>
-              <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-black/40 p-6">
-                <Image
-                  src={motorcycle?.images[1] ?? motorcycle?.image}
-                  alt={motorcycle?.model}
-                  width={800}
-                  height={600}
-                  className="h-full w-full rounded-[28px] object-cover"
-                />
-              </div>
-            </div>
+              Plan a ride on this bike <ArrowUpRight size={18} />
+            </Link>
+            <p>Choose your dates and see an estimate. No payment required.</p>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-[32px] border border-white/10 bg-white/5 p-6 shadow-premium">
-              <p className="text-xs uppercase tracking-[0.35em] text-accent">
-                Technical Excellence
-              </p>
-              <div className="mt-6 grid gap-3">
-                {motorcycle?.features.map((feature) => (
-                  <div
-                    key={feature}
-                    className="rounded-3xl border border-white/10 bg-black/50 p-4 text-sm text-white/70"
-                  >
-                    {feature}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <ColorPicker
-              colors={motorcycle?.colors}
-              selected={color}
-              onSelect={setColor}
-            />
+          <p className="detail-note">
+            This is a concept listing, not live inventory. Photos illustrate the
+            model family; exact specifications, model year, and availability are
+            not confirmed.
+          </p>
+        </div>
+      </section>
+      <section className="section related-section">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">KEEP EXPLORING</p>
+            <h2>Another way to get away.</h2>
           </div>
         </div>
-
-        <aside className="space-y-8">
-          <div className="rounded-[36px] border border-white/10 bg-white/5 p-6 shadow-premium">
-            <PriceDisplay price={motorcycle?.price} />
-            <div className="mt-8 rounded-[28px] border border-white/10 bg-black/60 p-6">
-              <p className="text-xs uppercase tracking-[0.35em] text-accent">
-                360° Experience
-              </p>
-              <p className="mt-3 text-sm leading-7 text-white/70">
-                Activate the rotation trigger to explore the motorcycle in
-                motion through an immersive presentation.
-              </p>
-              <button className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-accent px-5 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-black transition hover:brightness-105">
-                Start 360° View
-              </button>
-            </div>
-          </div>
-          <ImageGallery images={motorcycle?.images} />
-          <div className="rounded-[36px] border border-white/10 bg-white/5 p-6 shadow-premium">
-            <p className="text-xs uppercase tracking-[0.35em] text-accent">
-              Related Models
-            </p>
-            <div className="mt-4 space-y-4">
-              {related.map((model) => (
-                <motion.a
-                  key={model.slug}
-                  href={`/motorcycles/${model.slug}`}
-                  whileHover={{ x: 8 }}
-                  className="block rounded-3xl border border-white/10 bg-black/50 p-4 text-sm text-white transition"
-                >
-                  <p className="font-semibold text-white">{model.model}</p>
-                  <p className="text-white/60">{model.type}</p>
-                </motion.a>
-              ))}
-            </div>
-          </div>
-        </aside>
-      </div>
+        <div className="bike-grid">
+          {motorcycles
+            .filter((b) => b.id !== m.id)
+            .map((b) => (
+              <MotorcycleCard key={b.id} motorcycle={b} />
+            ))}
+        </div>
+      </section>
     </div>
   );
 }
